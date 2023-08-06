@@ -5,7 +5,7 @@
 
 const int width = 500;
 const int height = 500;
-
+int refreshMillis = 16;      // Refresh period in milliseconds
 float rot = 0;
 
 static GLfloat v_cube[8][3] =
@@ -85,6 +85,11 @@ static void display(void)
     glutSwapBuffers();
 }
 
+void Timer(int value) {
+   glutPostRedisplay();    // Post a paint request to activate display()
+   glutTimerFunc(refreshMillis, Timer, 0); // subsequent timer call at milliseconds
+}
+
 
 static void key(unsigned char key, int x, int y)
 {
@@ -133,7 +138,7 @@ int main(int argc, char *argv[])
     // glShadeModel( GL_SMOOTH ); ???
     // glEnable(GL_NORMALIZE); ???
     // glEnable(GL_BLEND); ???
-
+    glutTimerFunc(0, Timer, 0);   // First timer call immediately
 
     glutMainLoop();
 

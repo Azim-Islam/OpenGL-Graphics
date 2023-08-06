@@ -15,7 +15,7 @@ GLfloat ballY = 0.0f;
 GLfloat ballXMax, ballXMin, ballYMax, ballYMin; // Ball's center (x, y) bounds
 GLfloat xSpeed = 0.02f;      // Ball's speed in x and y directions
 GLfloat ySpeed = 0.007f;
-int refreshMillis = 30;      // Refresh period in milliseconds
+int refreshMillis = 16;      // Refresh period in milliseconds
  
 // Projection clipping area
 GLdouble clipAreaXLeft, clipAreaXRight, clipAreaYBottom, clipAreaYTop;
