@@ -7,6 +7,7 @@ const int width = 1280;
 const int height = 720;
 int refreshMillis = 16;      // Refresh period in milliseconds
 float rot = 0;
+float rotKata = 0;
 float zoomX = 20;
 float zoomY = 12;
 float zoomZ = 16;
@@ -40,9 +41,9 @@ static GLubyte p_Indices[6][4] =
 static GLfloat colors[6][3] =
 {
     {0.46, 0.25, 0.2}, //color for point index 0 Floor Color
-    {0.5, 0.0, 1.0}, //color for point index 1
-    {0.0, 1.0, 0.0}, //color for point index 2
-    {0.0, 1.0, 1.0}, //color for point index 3
+    {0.65, 0.41, 0.35}, //color for point index 1
+    {0.69, 0.44, 0.38}, //color for point index 2
+    {0.46, 0.25, 0.2}, //color for point index 3
     {0.65, 0.41, 0.35}, //color for point index 5 walll Color 2
     {0.69, 0.44, 0.38}, //color for point index 4 Wall Color 1
 };
@@ -68,7 +69,7 @@ void drawcube(GLfloat r, GLfloat  g, GLfloat  b)
 void drawroom()
 {
     for (GLint i = 0; i <6; i++){
-        if (i == 0 || i == 4 || i == 5)
+        if (1)
             {
             glBegin(GL_QUADS);
             glColor3fv(&colors[i][0]);
@@ -277,17 +278,18 @@ static void display(void)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     // glFrustum(-10, 10, -10, 10, 1.0, 100.0);
-    gluPerspective(45.0, 16/9.0, 1.0, 1000);
+    gluPerspective(90.0, 16/9.0, 1.0, 1000);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0, 1, 100, 0, 0, 0, 0, 1, 0);
+    gluLookAt(70, 40, 0, 10, 10, 10, 0, 1, 0);
     glViewport(0, 0, width, height);
 
     glPushMatrix();
-    glRotatef(-0, 0, 1, 0); //initial rotation
+    glRotatef(-45, 0, 1, 0); //initial rotation
     glRotatef(rot, 0, 1, 0);
-    glTranslatef(-40, -20, 0);
+    glTranslatef(-20, -10, 0);
+
 
     glScalef(zoomX, zoomY, zoomZ);
 
@@ -299,7 +301,36 @@ static void display(void)
     drawWardobe();
     drawSideTable();
     drawTubeLight();
-
+    
+    //draw a wall clock
+    glPushMatrix();
+    glScalef(0.01, 0.3, 0.3);
+    glTranslatef(1, 1+0.8, 1-0.5);
+        glPushMatrix();
+        glTranslatef(0.2, 0, 0);
+        glScalef(1, 0.1, 0.1);
+        glTranslatef(0, 4.5, 4.5);
+            //ghorir kata.exe
+            glPushMatrix();
+            glScalef(1, 1, 3);
+            glTranslatef(0, 0, 0.5);
+            drawcube(0, 0, 0);
+            glPopMatrix();
+            //ghorir kata.exe
+            glPushMatrix();
+            glScalef(1, 3, 0.4);
+            glTranslatef(0, 0.5, 0);
+                glPushMatrix();
+                glTranslatef(1, 1, 1);
+                glRotatef(rotKata, 1, 0, 0);
+                glTranslatef(-1, -1, -1);
+                drawcube(0, 0, 0);
+                glPopMatrix();
+            glPopMatrix();
+        drawcube(0, 0, 1);
+        glPopMatrix();
+    drawcube(1, 1, 1);
+    glPopMatrix();
 
     glPopMatrix();
     
@@ -336,14 +367,20 @@ static void key(unsigned char key, int x, int y)
         rot--;
         break;
     case '+':
-        zoomX *= 2;
-        zoomY *= 2;
-        zoomZ *= 2;
+        zoomX *= 1.2;
+        zoomY *= 1.2;
+        zoomZ *= 1.2;
         break;
     case '_':
-        zoomX /= 2;
-        zoomY /= 2;
-        zoomZ /= 2;
+        zoomX /= 1.2;
+        zoomY /= 1.2;
+        zoomZ /= 1.2;
+        break;
+    case 'w':
+        rotKata += 2;
+        break;
+    case 's':
+        rotKata -= 2;
         break;
     }
 
