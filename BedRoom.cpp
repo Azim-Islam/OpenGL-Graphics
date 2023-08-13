@@ -11,7 +11,14 @@ float rotKata = 0;
 float zoomX = 20;
 float zoomY = 12;
 float zoomZ = 16;
-
+float eyeX = 70;
+float eyeY = 40;
+float eyeZ = 0;
+float centerX = 10;
+float centerY = 10;
+float centerZ = 10;
+float viewX = 0;
+float viewY = 0; 
 
 
 static GLfloat v_cube[8][3] =
@@ -125,7 +132,6 @@ void drawWindow(GLfloat r, GLfloat  g, GLfloat  b){
     glPopMatrix();
 
 }
-
 
 void drawBalish(GLfloat r, GLfloat  g, GLfloat  b){
     //Draw blaish
@@ -282,7 +288,7 @@ static void display(void)
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(70, 40, 0, 10, 10, 10, 0, 1, 0);
+    gluLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 0, 1, 0);
     glViewport(0, 0, width, height);
 
     glPushMatrix();
@@ -352,10 +358,6 @@ static void key(unsigned char key, int x, int y)
     switch (key)
     {
     case 27 :
-    case 'q':
-        exit(0);
-        break;
-
     case ',':
         rot++;
         rot++;
@@ -377,12 +379,44 @@ static void key(unsigned char key, int x, int y)
         zoomZ /= 1.2;
         break;
     case 'w':
-        rotKata += 2;
+        eyeY += 2;
         break;
     case 's':
-        rotKata -= 2;
+        eyeY -= 2;
+        break;
+    case 'a':
+        eyeX += 2;
+        break;
+    case 'd':
+        eyeX -= 2;
+        break;
+    case 'q':
+        eyeZ += 2;
+        break;
+    case 'e':
+        eyeZ -= 2;
+        break;
+    case 'u':
+        centerY += 2;
+        break;
+    case 'j':
+        centerY -= 2;
+        break;
+    case 'h':
+        centerX += 2;
+        break;
+    case 'k':
+        centerX -= 2;
+        break;
+    case 'y':
+        centerZ += 2;
+        break;
+    case 'i':
+        centerX -= 2;
         break;
     }
+    
+    
 
     glutPostRedisplay();
 }
