@@ -55,6 +55,28 @@ static GLfloat colors[6][3] =
     {0.69, 0.44, 0.38}, //color for point index 4 Wall Color 1
 };
 
+static void getNormal3p
+(GLfloat x1, GLfloat y1,GLfloat z1, GLfloat x2, GLfloat y2,GLfloat z2, GLfloat x3, GLfloat y3,GLfloat z3)
+{
+    GLfloat Ux, Uy, Uz, Vx, Vy, Vz, Nx, Ny, Nz;
+
+    Ux = x2-x1;
+    Uy = y2-y1;
+    Uz = z2-z1;
+
+    Vx = x3-x1;
+    Vy = y3-y1;
+    Vz = z3-z1;
+
+    Nx = Uy*Vz - Uz*Vy;
+    Ny = Uz*Vx - Ux*Vz;
+    Nz = Ux*Vy - Uy*Vx;
+
+    glNormal3f(Nx,Ny,Nz);
+}
+
+
+
 
 void drawcube(GLfloat r, GLfloat  g, GLfloat  b)
 {   
@@ -62,30 +84,71 @@ void drawcube(GLfloat r, GLfloat  g, GLfloat  b)
         {
         glBegin(GL_QUADS);
         glVertex3fv(&v_cube[p_Indices[i][0]][0]);
-        glColor3f(r, g, b);
+        // glColor3f(r, g, b);
         glVertex3fv(&v_cube[p_Indices[i][1]][0]);
-        glColor3f(r, g, b);
+        // glColor3f(r, g, b);
         glVertex3fv(&v_cube[p_Indices[i][2]][0]);
-        glColor3f(r, g, b);
+        // glColor3f(r, g, b);
         glVertex3fv(&v_cube[p_Indices[i][3]][0]);
             
         glEnd();
         }
 }
 
+void light()
+{
+    GLfloat no_light[] = { 0.0, 0.0, 0.0, 1.0 };
+    GLfloat light_ambient[]  = { 0.5, 0.5, 0.5, 1.0};
+    GLfloat light_diffuse[]  = { 0.5, 0.5, 0.5, 1.0 };
+    GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat light_position[] = { 20.0, 12.0, 10.0, 1.0 };
+
+    glEnable( GL_LIGHT0);
+    glLightfv( GL_LIGHT0, GL_AMBIENT, light_ambient);
+    glLightfv( GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv( GL_LIGHT0, GL_SPECULAR, light_specular);
+    glLightfv( GL_LIGHT0, GL_POSITION, light_position);
+    
+
+}
+
+void mLight(GLfloat r, GLfloat g, GLfloat b, GLfloat shiny){
+    GLfloat no_mat[] = { 0.0, 0.0, 0.0, 1.0 };
+    GLfloat mat_ambient[] = { r, g, b, 0.5 };
+    GLfloat mat_diffuse[] = { r, g, b, 0.5 };
+    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat mat_shininess[] = {shiny};
+
+    glMaterialfv( GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    glMaterialfv( GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv( GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+    glMaterialfv( GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
+}
 void drawroom()
 {
+    GLfloat no_mat[] = { 0.0, 0.0, 0.0, 1.0 };
+    GLfloat mat_ambient[] = { 0.65, 0.41, 0.35, 1.0 };
+    GLfloat mat_diffuse[] = { 0.65, 0.41, 0.35, 1.0 };
+    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat mat_shininess[] = {50};
+
+    glMaterialfv( GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    glMaterialfv( GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv( GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+    glMaterialfv( GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
+
+
     for (GLint i = 0; i <6; i++){
         if (1)
             {
             glBegin(GL_QUADS);
-            glColor3fv(&colors[i][0]);
+            // glColor3fv(&colors[i][0]);
             glVertex3fv(&v_cube[p_Indices[i][0]][0]);
-            glColor3fv(&colors[i][0]);
+            // glColor3fv(&colors[i][0]);
             glVertex3fv(&v_cube[p_Indices[i][1]][0]);
-            glColor3fv(&colors[i][0]);
+            // glColor3fv(&colors[i][0]);
             glVertex3fv(&v_cube[p_Indices[i][2]][0]);
-            glColor3fv(&colors[i][0]);
+            // glColor3fv(&colors[i][0]);
             glVertex3fv(&v_cube[p_Indices[i][3]][0]);   
             glEnd();
             }
@@ -97,6 +160,7 @@ void drawFloorMatt(GLfloat r, GLfloat  g, GLfloat  b){
     glPushMatrix();
     glScalef(0.3, 0.02, 0.3);
     glTranslatef(0.5, 0, 2);
+    mLight(r, g, b, 50);
     drawcube(r, g, b);
     glPopMatrix();
 }
@@ -107,6 +171,7 @@ void drawWindow(GLfloat r, GLfloat  g, GLfloat  b){
     glPushMatrix();
     glScalef(0.01, 0.15, 0.15);
     glTranslatef(0, 2+0.5, 3+0.5);
+    mLight(r, g, b, 50);
     drawcube(r, g, b);
     glPopMatrix();
 
@@ -114,6 +179,7 @@ void drawWindow(GLfloat r, GLfloat  g, GLfloat  b){
     glPushMatrix();
     glScalef(0.01, 0.15, 0.15);
     glTranslatef(0, 3.1+0.5, 4.1+0.5);
+    mLight(r, g, b, 50);
     drawcube(r, g, b);
     glPopMatrix();
 
@@ -121,6 +187,7 @@ void drawWindow(GLfloat r, GLfloat  g, GLfloat  b){
     glPushMatrix();
     glScalef(0.01, 0.15, 0.15);
     glTranslatef(0, 2+0.5, 4.1+0.5);
+    mLight(r, g, b, 50);
     drawcube(r, g, b);
     glPopMatrix();
 
@@ -128,6 +195,7 @@ void drawWindow(GLfloat r, GLfloat  g, GLfloat  b){
     glPushMatrix();
     glScalef(0.01, 0.15, 0.15);
     glTranslatef(0, 3.1+0.5, 3+0.5);
+    mLight(r, g, b, 50);
     drawcube(r, g, b);
     glPopMatrix();
 
@@ -138,30 +206,37 @@ void drawBalish(GLfloat r, GLfloat  g, GLfloat  b){
     glPushMatrix();
     glScalef(0.05, 0.1, 0.2);
     glTranslatef(0.6, 2, 0.2);
+    mLight(1, 1, 1, 50);
     drawcube(1, 1, 1);
     glPopMatrix();
 
     glPushMatrix();
     glScalef(0.05, 0.1, 0.2);
     glTranslatef(0.6, 2, 1.3);
+    mLight(1, 1, 1, 50);
     drawcube(1, 1, 1);
     glPopMatrix();
 }
 
 void drawBed(){
+
+
     //Draw bed matress
+    mLight(0.94, 0.77, 0.53, 50);
     glPushMatrix();
     glScalef(0.5, 0.2, 0.5);
     drawcube(0.94, 0.77, 0.53);
     glPopMatrix();
     
     //draw bed floor
+    mLight(0.73, 0.49, 0.27, 50);
     glPushMatrix();
     glScalef(0.51, 0.05, 0.51);
     drawcube(0.73, 0.49, 0.27);
     glPopMatrix();
     
     //draw bed 
+    mLight(1, 1, 1, 50);
     glPushMatrix();
     glScalef(0.35, 0.07, 0.51);
     glTranslatef(0.4, 2, 0);
@@ -172,6 +247,7 @@ void drawBed(){
 
 void drawWardobe(){
     //Draw Wardrobe
+    mLight(0.43, 0.17, 0.01, 50);
     glPushMatrix();
     glScalef(0.2, 0.8, 0.2);
     glTranslatef(3, 0, 0);
@@ -180,6 +256,7 @@ void drawWardobe(){
         glPushMatrix();
         glScalef(0.05, 1, 0.01);
         glTranslatef(0, 0, 100);
+        mLight(0.26, 0.1, 0, 50);
         drawcube(0.26, 0.1, 0);
         glPopMatrix();
         //Draw Middle Strip
@@ -197,6 +274,7 @@ void drawWardobe(){
     glPopMatrix();
 
     //Draw Box
+    mLight(0.9, 0.84, 0.46, 50);
     glPushMatrix();
     glScalef(0.08, 0.15, 0.15);
     glTranslatef(9, 5.3, 0);
@@ -204,6 +282,7 @@ void drawWardobe(){
     glPopMatrix();
 
     //Draw Bottom Strip
+    mLight(0.26, 0.1, 0, 50);
     glPushMatrix();
     glScalef(0.23, 0.03, 0.23);
     glTranslatef(2.55, 0, 0);
@@ -227,6 +306,7 @@ void drawSideTable(){
         glPushMatrix();
         glScalef(1.1, 0.1, 1.1);
         glTranslated(0, 0, -0.05);
+        mLight(0.73, 0.49, 0.27, 50);
         drawcube(0.73, 0.49, 0.27);
         glPopMatrix();
 
@@ -248,6 +328,7 @@ void drawSideTable(){
         glPushMatrix();
         glScalef(0.25, 0.05, 0.1);
         glTranslatef(2, 20, 5);
+        mLight(0, 0, 0, 50);
         drawcube(0, 0, 0);
         glPopMatrix();
 
@@ -255,10 +336,11 @@ void drawSideTable(){
         glPushMatrix();
         glScalef(0.2, 0.3, 0.1);
         glTranslatef(2, 3.3, 3);
+        mLight(0.26, 0.33, 0.93, 50);
         drawcube(0.26, 0.33, 0.93);
         glPopMatrix();
 
-
+    mLight(0.94, 0.77, 0.53, 50);
     drawcube(0.94, 0.77, 0.53);
     glPopMatrix();
 
@@ -271,11 +353,51 @@ void drawTubeLight(){
     glTranslatef(1, 11, 0.2);
     glPushMatrix();
     glScalef(1.1, 1.1, 0.1);
+    mLight(0.87, 0.87, 0.87, 50);
     drawcube(0.87, 0.87, 0.87);
     glPopMatrix();
+    mLight(1, 1, 1, 50);
     drawcube(1, 1, 1);
     glPopMatrix();
 
+}
+
+void drawWallClock(){
+    //draw a wall clock
+    glPushMatrix();
+    glScalef(0.01, 0.3, 0.3);
+    glTranslatef(1, 1+0.8, 1-0.5);
+        glPushMatrix();
+        glTranslatef(0.2, 0, 0);
+        glScalef(1, 0.1, 0.1);
+        glTranslatef(0, 4.5, 4.5);
+            //ghorir kata.exe
+            glPushMatrix();
+            glScalef(1, 1, 3);
+            glTranslatef(0, 0, 0.5);
+            mLight(0, 0, 0, 50);
+            drawcube(0, 0, 0);
+            glPopMatrix();
+            //ghorir kata.exe
+            glPushMatrix();
+            glScalef(1, 3, 0.4);
+            glTranslatef(0, 0.5, 0);
+                glPushMatrix();
+                glTranslatef(1, 1, 1);
+                glRotatef(rotKata, 1, 0, 0);
+                glTranslatef(-1, -1, -1);
+                mLight(0, 0, 0, 50);
+                drawcube(0, 0, 0);
+                glPopMatrix();
+            glPopMatrix();
+        mLight(0, 0, 1, 50);
+        drawcube(0, 0, 1);
+        glPopMatrix();
+    mLight(1, 1, 1, 50);
+    drawcube(1, 1, 1);
+    glPopMatrix();
+
+    glPopMatrix();
 }
 
 static void display(void)
@@ -307,38 +429,7 @@ static void display(void)
     drawWardobe();
     drawSideTable();
     drawTubeLight();
-    
-    //draw a wall clock
-    glPushMatrix();
-    glScalef(0.01, 0.3, 0.3);
-    glTranslatef(1, 1+0.8, 1-0.5);
-        glPushMatrix();
-        glTranslatef(0.2, 0, 0);
-        glScalef(1, 0.1, 0.1);
-        glTranslatef(0, 4.5, 4.5);
-            //ghorir kata.exe
-            glPushMatrix();
-            glScalef(1, 1, 3);
-            glTranslatef(0, 0, 0.5);
-            drawcube(0, 0, 0);
-            glPopMatrix();
-            //ghorir kata.exe
-            glPushMatrix();
-            glScalef(1, 3, 0.4);
-            glTranslatef(0, 0.5, 0);
-                glPushMatrix();
-                glTranslatef(1, 1, 1);
-                glRotatef(rotKata, 1, 0, 0);
-                glTranslatef(-1, -1, -1);
-                drawcube(0, 0, 0);
-                glPopMatrix();
-            glPopMatrix();
-        drawcube(0, 0, 1);
-        glPopMatrix();
-    drawcube(1, 1, 1);
-    glPopMatrix();
-
-    glPopMatrix();
+    drawWallClock();
     
 
 
@@ -448,6 +539,9 @@ int main(int argc, char *argv[])
     glShadeModel( GL_SMOOTH ); //???
     glEnable(GL_NORMALIZE); //???
     glEnable(GL_BLEND); //???
+    glEnable(GL_LIGHTING);
+    light();
+
 
     glutMainLoop();
 
