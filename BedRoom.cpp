@@ -94,6 +94,13 @@ void drawcube(GLfloat r, GLfloat  g, GLfloat  b)
         glEnd();
         }
 }
+void light0on(){
+    glEnable(GL_LIGHT0);
+}
+
+void light0off(){
+    glDisable(GL_LIGHT0);
+}
 
 void light()
 {
@@ -505,7 +512,14 @@ static void key(unsigned char key, int x, int y)
     case 'i':
         centerX -= 2;
         break;
+    case '1':
+        light0off();
+        break;
+    case '2':
+        light0on();
+        break;
     }
+
     
     
 
