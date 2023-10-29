@@ -1,3 +1,4 @@
+from collections import defaultdict
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -22,12 +23,12 @@ viewY = 0;
 
 w,h= 500, 500
 
-
+ctrl = defaultdict(int)
 
 
 
 def display():
-    global rot, zoomX, zoomY, zoomZ, eyeX, eyeY, eyeZ
+    global rot, zoomX, zoomY, zoomZ, eyeX, eyeY, eyeZ, ctrl
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); # type: ignore
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -40,14 +41,14 @@ def display():
     glViewport(0, 0, width, height);
 
     glPushMatrix();
-    glRotatef(-45, 0, 1, 0); # initial rotation
+    glRotatef(-30, 0, 1, 0); # initial rotation
     glRotatef(rot, 0, 1, 0);
     glTranslatef(-20, -10, 0);
 
 
     glScalef(zoomX, zoomY, zoomZ);
 
-    draw_scene()
+    draw_scene(ctrl)
     glPopMatrix()
     glutSwapBuffers()
 
@@ -58,7 +59,6 @@ def key(key:str, x, y):
     global rot, zoomX, zoomY, zoomZ, eyeX, eyeY, eyeZ
     key = key.decode('utf-8') # type: ignore
     if key == ",":
-        print("Redrawing")
         rot += 3
     elif key == ".":
         rot -= 3
@@ -82,6 +82,17 @@ def key(key:str, x, y):
         eyeZ += 2
     elif key == 'e':
         eyeZ -= 2
+    elif key == "u":
+        ctrl['Z'] += 1
+    elif key == "j":
+        ctrl['Z'] -= 1
+    elif key == "h":
+        ctrl['X'] -= 1
+    elif key == "k":
+        ctrl['X'] += 1
+    print(ctrl)
+
+
     # glutPostRedisplay()
 
 def idle():

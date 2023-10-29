@@ -2,23 +2,7 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
-def init():
-    ctrlpoints =   [
-        [(0, -1.5, 4.0), (0, -1.5, 2.0), (0.5, -1.5, -1.0), (1.5, -1.5, 2.0)], 
 
-        [(0, -0.5, 1.0), (0, -0.5, 3.0), (0.5, -0.5, 0.0), (1.5, -0.5, -1.0)], 
-    
-        [(0, 0.5, 4.0), (-0.5, 0.5, 0.0), (0.5, 0.5, 3.0), (1.5, 0.5, 4.0)], 
-
-        [(0, 1.5, -2.0), (-0.5, 1.5, -2.0), (0.5, 1.5, 0.0), (1.5, 1.5, -1.0)]
-        ]
-    
-    glClearColor (0.0, 0.0, 0.0, 0.0);
-    glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, ctrlpoints);
-    glEnable(GL_MAP2_VERTEX_3);
-    glMapGrid2f(20, 0.0, 1.0, 20, 0.0, 1.0);
-    glEnable(GL_DEPTH_TEST);
-    glShadeModel(GL_FLAT);
 
 def draw_cube(r:float,  g:float, b:float):
     indices =     [
@@ -50,28 +34,52 @@ def draw_cube(r:float,  g:float, b:float):
         glEnd()
 
 
-def draw_track():
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); # type: ignore
-    glColor3f(1.0, 1.0, 1.0);
-    glPushMatrix ();
-    for j in range(9):
-        glBegin(GL_LINE_STRIP);
-        for i in range(31):
-                glEvalCoord2f(i/30.0, j/8.0)
-        glEnd();
-        glBegin(GL_LINE_STRIP);
-        for i in range(31):
-                glEvalCoord2f(j/8.0, i/30.0)
-        glEnd();
-   
-   
-    glPopMatrix ();
-    glFlush();
+k1 = lambda t: (1 - t) * (1 - t) * (1 - t)
+k2 = lambda t: 3 * (1 - t) * (1 - t) * t
+k3 = lambda t: 3 * (1 - t) * t * t
+k4 = lambda t: t * t * t
+PT = lambda t, P1, P2, P3, P4: P1 * k1(t) + P2 * k2(t) + P3 * k3(t) + P4 * k4(t);
+ctrl_points = [15, 30, 20, 8]
+
+def draw_curve():
+    glPushMatrix()
+
+    seg_points = []
+    seg = 300
+    for i in range(seg):
+        t = i/seg
+        pt = PT(t, *ctrl_points)
+        seg_points.append(pt)
+
+    #We will be fixing Y axis, draw through X axis and iterate throguh Z axis.
+    line_points_3fv_1 = [[i/10, 1, seg_points[i]] for i in range(seg)]
+    line_points_3fv_2 = [[i/10, 1, seg_points[i]+5] for i in range(seg)]
+    # print(line_points_3fv)
+    for i in range(0, seg, 1):
+        glColor3f(77/255, 85/255, 90/255)
+        glBegin(GL_QUADS)
+        for p in line_points_3fv_1[i:i+2]:
+            glVertex3fv(p)
+        for p in line_points_3fv_2[i:i+2][::-1]:
+            glVertex3fv(p)
+        glEnd()
+        
+    glPopMatrix()
+
+def draw_building_1(ctrl=None):
+    glPushMatrix()
+    glTranslatef(10, 1, 28)
+    draw_cube(117/255, 75/255, 0/255)
+    glPopMatrix()
+
+def draw_track(ctrl=None):
+    draw_curve()
+    draw_building_1(ctrl)
+    
 
 
 
 
-def draw_scene():
-    init()
-    draw_track()
+def draw_scene(ctrl=None):
+    draw_track(ctrl)
     
